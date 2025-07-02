@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struttura Completa - Responsive Design</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        :root {
+            --header-height: 80px;
+            --footer-height: 200px;
+            --legend-width: 240px;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* HEADER STYLES */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1a2530 100%);
+            color: white;
+            padding: 15px 20px;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .title-group h1 {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .title-group .subtitle {
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            opacity: 0.85;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* MAIN CONTENT LAYOUT */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        /* LEGEND SECTION */
+        .legend-section {
+            width: var(--legend-width);
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-right: 10px;
+            overflow-y: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        
+        .legend-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+        }
+        
+        .color-box {
+            min-width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* DIAGRAM SECTION */
+        .diagram-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .diagram-container {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        #diagram {
+            min-width: 1000px;
+            min-height: 800px;
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+        
+        /* NOTES FOOTER */
+        footer.notes {
+            background: #fffde7;
+            padding: 20px;
+            border-top: 1px solid #eaeaea;
+            height: var(--footer-height);
+            overflow-y: auto;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        
+        .notes-container {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+        
+        .notes h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ffc107;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .note-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+        }
+        
+        .note-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        .note-card ul {
+            padding-left: 18px;
+        }
+        
+        .note-card li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .note-card strong {
+            color: var(--accent-color);
+        }
+        
+        /* RESPONSIVE ADJUSTMENTS */
+        @media (max-width: 1200px) {
+            :root {
+                --legend-width: 200px;
+                --footer-height: 250px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .legend-section {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+                max-height: 200px;
+            }
+            
+            .diagram-container {
+                padding: 10px;
+            }
+            
+            #diagram {
+                min-width: 800px;
+                min-height: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --header-height: auto;
+                --footer-height: 300px;
+            }
+            
+            header {
+                padding: 10px;
+                height: auto;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .title-group {
+                text-align: center;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            #diagram {
+                min-width: 700px;
+                min-height: 500px;
+                transform: scale(0.9);
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            #diagram {
+                min-width: 600px;
+                min-height: 400px;
+                transform: scale(0.8);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #diagram {
+                min-width: 500px;
+                transform: scale(0.7);
+            }
+            
+            .legend-section {
+                padding: 10px;
+            }
+            
+            .legend-item {
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-content">
+            <div class="title-group">
+                <h1>Struttura Societaria Completa</h1>
+                <div class="subtitle">Soci Fondatori, Trust e Servizi Para-Bancari</div>
+            </div>
+            <div class="controls">
+                <button class="control-btn" id="zoom-in">
+                    <span>+</span> Ingrandisci
+                </button>
+                <button class="control-btn" id="zoom-out">
+                    <span>-</span> Riduci
+                </button>
+                <button class="control-btn" id="reset-view">
+                    <span>↺</span> Reset
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Legend Panel -->
+        <div class="legend-section">
+            <h2>Legenda</h2>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #F8BBD0;"></div>
+                    <span>Fasi Roadmap</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #DCEDC8;"></div>
+                    <span>Gruppo Persone</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #C8E6C9;"></div>
+                    <span>Persona Fisica</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #BBDEFB;"></div>
+                    <span>Persona Giuridica</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #E1BEE7;"></div>
+                    <span>Struttura Fiduciaria</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #FFECB3;"></div>
+                    <span>Processo/Attività</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #FFF9C4;"></div>
+                    <span>Asset/Beni</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #B2EBF2;"></div>
+                    <span>Investimento</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #FFCCBC;"></div>
+                    <span>Servizio</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background-color: #C5E1A5;"></div>
+                    <span>Cliente Esterno</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Diagram Section -->
+        <div class="diagram-section">
+            <div class="diagram-container">
+                <div class="mermaid" id="diagram">
+flowchart TD
+    %% ======================= ROADMAP LEGALE-FISCALE =======================
+    subgraph Roadmap[&quot;📅 ROADMAP LEGALE-FISCALE&quot;]
+        direction TB
+        
+        subgraph FaseA[&quot;🅰️ FASE A (Q3 2025)&quot;]
+            FA0[&quot;FASE 0: Pre Fase aderenti&quot;]
+        end
+        
+        subgraph FaseB[&quot;🅱️ FASE B (Q4 2025)&quot;]
+            FB1[&quot;1. FASE 1: Ricerca consulenti&quot;]
+            FB2[&quot;2. FASE 2: Raccolta fondi&quot;]
+            FB3[&quot;3. FASE 3: Presentazione&quot;]
+            FB4[&quot;4. FASE 4: Votazione consulente&quot;]
+            FB5[&quot;5. FASE 5: Analisi fattibilità&quot;]
+        end
+        
+        subgraph FaseC[&quot;🅲 FASE C (Q1 2026)&quot;]
+            FC6[&quot;6. FASE 6: Finanziamento BP&quot;]
+            FC7[&quot;7. FASE 7: Pagamento consulente&quot;]
+            FC8[&quot;8. FASE 8: Ricezione BP&quot;]
+            FC9[&quot;9. FASE 9: Approvazione BP&quot;]
+            FC10[&quot;10. FASE 10: Raccolta fondi&quot;]
+        end
+        
+        subgraph FaseD[&quot;🅳 FASE D (Q2 2026)&quot;]
+            FD11[&quot;11. FASE 11: Documenti e capitali&quot;]
+        end
+        
+        FaseA --&gt; FaseB --&gt; FaseC --&gt; FaseD
+    end
+
+    %% ======================= STRUTTURA SOCIETARIA =======================
+    FaseD --&gt; Soci[&quot;👥 SOCI FONDATORI&quot;]
+    Soci --&gt; S1[&quot;1. 👤 Settler 1 (40%)&quot;]
+    Soci --&gt; S2[&quot;2. 👤 Settler 2 (35%)&quot;]
+    Soci --&gt; S3[&quot;3. 👤 Settler 3 (25%)&quot;]
+    
+    NewPartner[&quot;🆕 New Partner&quot;] --&gt;|Accesso| A_LLC[&quot;🏢 American LLC&quot;]
+    S1 &amp; S2 &amp; S3 --&gt; A_LLC
+    A_LLC --&gt; Trustee[&quot;👔 Trustee + Master Trust&quot;]
+    
+    Trustee --&gt; ST1[&quot;1. 📊 Sub-Trust 1 (40%)&quot;]
+    Trustee --&gt; ST2[&quot;2. 📊 Sub-Trust 2 (35%)&quot;]
+    Trustee --&gt; ST3[&quot;3. 📊 Sub-Trust 3 (25%)&quot;]
+    Trustee --&gt; NST_New[&quot;4. 📦 New Sub-Trust&quot;]
+    
+    ST1 --&gt; AST1[&quot;💾 Assets&quot;]
+    ST2 --&gt; AST2[&quot;💾 Assets&quot;]
+    ST3 --&gt; AST3[&quot;💾 Assets&quot;]
+    NST_New --&gt; AST_New[&quot;💾 Assets&quot;]
+    
+    AST1 &amp; AST2 &amp; AST3 --&gt; CCF[&quot;💰 Common Crypto Fund&quot;]
+    
+    %% ======================= SERVIZI PER CLIENTI ESTERNI =======================
+    Trustee --&gt;|Offre servizi| Servizi[&quot;🏦 Servizi Para-Bancari&quot;]
+    Servizi --&gt; ContiFiat[&quot;💵 Conti Fiat Internazionali&quot;]
+    Servizi --&gt; ContiCrypto[&quot;🪙 Conti Cryptovalute&quot;]
+    Servizi --&gt; TenutaConti[&quot;📊 Tenuta Conti Professionale&quot;]
+    
+    ClientiEsterni[&quot;👥 Clienti Esterni&quot;] --&gt;|Utilizza| Servizi
+    ClientiEsterni --&gt;|Commissioni| Entrate[&quot;💰 Entrate aggiuntive&quot;]
+    Entrate --&gt; Trustee
+    
+    %% ======================= GESTIONE BENEFICIARI =======================
+    ST1 -.- B1[&quot;👤 Beneficiario 1&quot;]
+    ST2 -.- B2[&quot;👤 Beneficiario 2&quot;]
+    ST3 -.- B3[&quot;👤 Beneficiario 3&quot;]
+    NST_New -.- BN[&quot;👤 Beneficiario New&quot;]
+    
+    CCF --&gt; SG[&quot;📈 Plusvalenze&quot;]
+    B1 &amp; B2 &amp; B3 &amp; BN --&gt;|Decisione| DA[&quot;⚖️ Meccanismo Decisionale&quot;]
+    SG --&gt; DA
+    
+    DA --&gt; Compenso[&quot;💸 Compensi (30-40%)&quot;]
+    DA --&gt; Manutenzione[&quot;⚙️ Manutenzione (10-20%)&quot;]
+    DA --&gt; Fondo[&quot;🏦 Fondo Investimenti (40-60%)&quot;]
+    
+    %% ======================= INVESTIMENTI =======================
+    Fondo --&gt; Holding[&quot;🇮🇹 Sub-Holding Italiana&quot;]
+    Holding --&gt; Agro[&quot;🍅 Agroalimentari&quot;]
+    Holding --&gt; Fashion[&quot;👗 Fashion&quot;]
+    Holding --&gt; Gioielli[&quot;💍 Gioielleria&quot;]
+    
+    Agro --&gt; Prod1[&quot;🏭 Produzione&quot;]
+    Fashion --&gt; Prod2[&quot;🏭 Produzione&quot;]
+    Gioielli --&gt; Prod3[&quot;🏭 Produzione&quot;]
+    Prod1 &amp; Prod2 &amp; Prod3 --&gt; Export[&quot;🌍 Export&quot;]
+    
+    Fondo --&gt; RealEstate[&quot;🏘️ Immobiliare&quot;]
+    RealEstate --&gt; SPV[&quot;🏢 Società Veicolo&quot;]
+    SPV --&gt; Res[&quot;🏠 Residenziale&quot;]
+    SPV --&gt; Ric[&quot;🏨 Ricettivo&quot;]
+    SPV --&gt; Terreni[&quot;🌱 Terreni&quot;]
+    RealEstate --&gt; NFT[&quot;🖼️ NFT Tokenizzati&quot;]
+    Res &amp; Ric &amp; Terreni &amp; NFT --&gt; Global[&quot;🌐 Mercati Global&quot;]
+
+    %% ======================= LEGENDA =======================
+    subgraph Legenda[&quot;📚 LEGENDA&quot;]
+        direction TB
+        PersFisica[&quot;👤 Persona Fisica&quot;]
+        PersGiuridica[&quot;🏢 Persona Giuridica&quot;]
+        Struttura[&quot;🏛️ Struttura Fiduciaria&quot;]
+        Processo[&quot;🔄 Processo/Attività&quot;]
+        Asset[&quot;💰 Asset/Beni&quot;]
+        Investimento[&quot;📈 Investimento&quot;]
+        Servizio[&quot;🏦 Servizio&quot;]
+        Cliente[&quot;👥 Cliente Esterno&quot;]
+    end
+
+    %% ======================= STILI =======================
+    classDef roadmap fill:#F8BBD0,stroke:#D81B60
+    classDef personGroup fill:#DCEDC8,stroke:#689F38
+    classDef person fill:#C8E6C9,stroke:#2E7D32
+    classDef entity fill:#BBDEFB,stroke:#1565C0
+    classDef trust fill:#E1BEE7,stroke:#7B1FA2
+    classDef process fill:#FFECB3,stroke:#FF8F00
+    classDef asset fill:#FFF9C4,stroke:#F57F17
+    classDef investment fill:#B2EBF2,stroke:#00838F
+    classDef service fill:#FFCCBC,stroke:#FF5722
+    classDef client fill:#C5E1A5,stroke:#7CB342
+    
+    class Roadmap,FaseA,FaseB,FaseC,FaseD roadmap
+    class Soci personGroup
+    class S1,S2,S3,B1,B2,B3,BN,NewPartner person
+    class A_LLC,Holding,SPV entity
+    class Trustee,ST1,ST2,ST3,NST_New trust
+    class SG,DA,Compenso,Manutenzione,Prod1,Prod2,Prod3,Export,NFT,Global process
+    class AST1,AST2,AST3,AST_New,CCF,Fondo asset
+    class Agro,Fashion,Gioielli,RealEstate,Res,Ric,Terreni investment
+    class Servizi,ContiFiat,ContiCrypto,TenutaConti service
+    class ClientiEsterni,Entrate client
+    class Legenda process
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notes Footer -->
+    <footer class="notes">
+        <div class="notes-container">
+            <h2>Note Esplicative</h2>
+            <div class="notes-grid">
+                <div class="note-card">
+                    <h3>🏛️ Struttura Societaria</h3>
+                    <ul>
+                        <li><strong>Soci Fondatori</strong>: 1. Settler 1 (40%), 2. Settler 2 (35%), 3. Settler 3 (25%)</li>
+                        <li><strong>Sub-Trust</strong>: 1. Sub-Trust 1 (40%), 2. Sub-Trust 2 (35%), 3. Sub-Trust 3 (25%), 4. New Sub-Trust</li>
+                        <li>I nuovi soci accedono tramite American LLC</li>
+                        <li>Master Trust gestisce tutti i Sub-Trust</li>
+                    </ul>
+                </div>
+                
+                <div class="note-card">
+                    <h3>🏦 Servizi Para-Bancari</h3>
+                    <ul>
+                        <li>Offerti a <strong>clienti esterni</strong> (non soci)</li>
+                        <li>Conti internazionali in valuta fiat e crypto</li>
+                        <li>Tenuta conti professionale</li>
+                        <li>Generano entrate aggiuntive tramite commissioni</li>
+                        <li>Non richiedono creazione di Sub-Trust</li>
+                    </ul>
+                </div>
+                
+                <div class="note-card">
+                    <h3>📊 Gestione Fondi</h3>
+                    <ul>
+                        <li>Plusvalenze allocate in tre aree: compensi, manutenzione, investimenti</li>
+                        <li>Investimenti diversificati: produttivi e immobiliari</li>
+                        <li>Export verso mercati strategici: EAU, Cina, USA, Canada</li>
+                        <li>Opzioni innovative: NFT tokenizzati per immobili</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Inizializzazione Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+        });
+        
+        // Variabili per lo stato dello zoom
+        let currentScale = 1;
+        const zoomStep = 0.1;
+        const minScale = 0.5;
+        const maxScale = 2;
+        
+        // Funzione per applicare lo zoom
+        function applyZoom() {
+            const diagram = document.getElementById('diagram');
+            diagram.style.transform = `scale(${currentScale})`;
+            diagram.style.transformOrigin = 'top center';
+        }
+        
+        // Gestione degli eventi dei pulsanti
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            if (currentScale < maxScale) {
+                currentScale += zoomStep;
+                applyZoom();
+            }
+        });
+        
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            if (currentScale > minScale) {
+                currentScale -= zoomStep;
+                applyZoom();
+            }
+        });
+        
+        document.getElementById('reset-view').addEventListener('click', () => {
+            currentScale = 1;
+            applyZoom();
+        });
+        
+        // Centra il diagramma al caricamento
+        window.addEventListener('load', function() {
+            // Forza il ridisegno del diagramma
+            setTimeout(() => {
+                mermaid.init(undefined, '.mermaid');
+                
+                // Centra la vista dopo il rendering
+                const diagramContainer = document.querySelector('.diagram-container');
+                if (diagramContainer) {
+                    diagramContainer.scrollTop = diagramContainer.scrollHeight / 4;
+                    diagramContainer.scrollLeft = (diagramContainer.scrollWidth - diagramContainer.clientWidth) / 2;
+                }
+            }, 800);
+        });
+        
+        // Adattamento automatico al ridimensionamento
+        window.addEventListener('resize', function() {
+            const diagramContainer = document.querySelector('.diagram-container');
+            if (diagramContainer) {
+                diagramContainer.scrollLeft = (diagramContainer.scrollWidth - diagramContainer.clientWidth) / 2;
+            }
+        });
+    </script>
+</body>
+</html>
